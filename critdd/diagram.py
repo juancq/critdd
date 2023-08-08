@@ -86,7 +86,10 @@ class Diagram(AbstractDiagram):
         """
         if self.r.pvalue >= alpha: # does the Friedman test fail to reject?
             return [ np.arange(len(self.average_ranks)) ] # all treatments in a single group
-        P = stats.adjust_pairwise_tests(self.P, adjustment)
+        if adjustment: 
+            P = stats.adjust_pairwise_tests(self.P, adjustment)
+        else:
+            P = self.P
         G = nx.Graph(np.logical_and(np.isfinite(P), P >= alpha))
         groups = list(nx.find_cliques(G)) # groups = maximal cliques
         r_min = np.empty(len(groups)) # minimum and maximum rank per group
